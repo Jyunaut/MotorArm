@@ -30,7 +30,6 @@
         {
             this.components = new System.ComponentModel.Container();
             this.port = new System.IO.Ports.SerialPort(this.components);
-            this.serialPort1 = new System.IO.Ports.SerialPort(this.components);
             this.SuspendLayout();
             // 
             // port
@@ -53,6 +52,5 @@
         #endregion
 
         private System.IO.Ports.SerialPort port;
-        private System.IO.Ports.SerialPort serialPort1;
     }
 }
