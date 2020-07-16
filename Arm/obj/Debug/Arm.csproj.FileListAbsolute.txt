@@ -1,0 +1,9 @@
+C:\Users\Bread Martin\source\repos\Arm\Arm\obj\Debug\Arm.csprojAssemblyReference.cache
+C:\Users\Bread Martin\source\repos\Arm\Arm\obj\Debug\Arm.csproj.CoreCompileInputs.cache
+C:\Users\Bread Martin\source\repos\Arm\Arm\obj\Debug\Arm.csproj.GenerateResource.cache
+C:\Users\Bread Martin\source\repos\Arm\Arm\bin\Debug\Arm.exe.config
+C:\Users\Bread Martin\source\repos\Arm\Arm\bin\Debug\Arm.exe
+C:\Users\Bread Martin\source\repos\Arm\Arm\bin\Debug\Arm.pdb
+C:\Users\Bread Martin\source\repos\Arm\Arm\obj\Debug\Arm.exe
+C:\Users\Bread Martin\source\repos\Arm\Arm\obj\Debug\Arm.pdb
+C:\Users\Bread Martin\source\repos\Arm\Arm\obj\Debug\Arm.Window.resources

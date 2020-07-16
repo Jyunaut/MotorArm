@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30225.117
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Arm", "Arm\Arm.csproj", "{1D228CC5-71B6-49B5-BEB4-419F8704DE3A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1D228CC5-71B6-49B5-BEB4-419F8704DE3A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1D228CC5-71B6-49B5-BEB4-419F8704DE3A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1D228CC5-71B6-49B5-BEB4-419F8704DE3A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1D228CC5-71B6-49B5-BEB4-419F8704DE3A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {267C9B91-CDB8-4D27-AE21-443F562C2C68}
+	EndGlobalSection
+EndGlobal
