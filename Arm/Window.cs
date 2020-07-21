@@ -32,20 +32,10 @@ namespace Arm
             //port.Open();
         }
 
-        private void Window_MouseMove(object sender, MouseEventArgs e)
-        {
-            if (Stopwatch.ElapsedMilliseconds > 15)
-            {
-                Stopwatch = Stopwatch.StartNew();
-                //port.Write(String.Format("1:{0}2:{1}", e.X, e.Y));
-                Console.WriteLine(String.Format("Theta 1:{0}    \tTheta 2:{1}", CoordsToMotorDeg(e.Location)[0], CoordsToMotorDeg(e.Location)[1]));
-            }
-        }
-
         private void Window_MouseLeave(object sender, EventArgs e)
         {
             //port.Write(String.Format("1:{0}2:{1}", 0, 0));
-            Console.WriteLine(String.Format("Theta 1:{0}    \tTheta 2:{1}", 0, 0));
+            Console.WriteLine(String.Format("Theta 1:{0}\tTheta 2:{1}", 0, 0));
         }
 
         private double[] ScaledPoint(Point Point)
@@ -59,7 +49,28 @@ namespace Arm
         }
 
         private double c1, c2, s1, s2;
-        private int[] CoordsToMotorDeg(Point Point)
+        private Point Point;
+
+        private void Area_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (Stopwatch.ElapsedMilliseconds > 15)
+            {
+                Stopwatch = Stopwatch.StartNew();
+                //port.Write(String.Format("1:{0}2:{1}", e.X, e.Y));
+                Point = e.Location;
+                Area_Paint(this, null);
+                Console.WriteLine(String.Format("Theta 1:{0}\tTheta 2:{1}", CoordsToMotorDeg()[0], CoordsToMotorDeg()[1]));
+            }
+        }
+
+        private void Area_Paint(object sender, PaintEventArgs e)
+        {
+            Graphics g = Area.CreateGraphics();
+            g.Clear(Color.White);
+            g.DrawLine(System.Drawing.Pens.Black, 0, 0, Point.X, Point.Y);
+        }
+
+        private int[] CoordsToMotorDeg()
         {
             c2 = (Math.Pow(ScaledPoint(Point)[0], 2) + Math.Pow(ScaledPoint(Point)[1], 2) - Math.Pow(l1, 2) - Math.Pow(l2, 2)) / (2 * l1 * l2);
             s2 = Math.Sqrt(1 - Math.Pow(c2, 2));
