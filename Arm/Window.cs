@@ -15,8 +15,12 @@ namespace Arm
 {
     public partial class Window : Form
     {
-        public Stopwatch stopwatch { get; set; }
+        public Stopwatch Stopwatch { get; set; }
 
+        // Motor Arm Properties (mm)
+        private readonly double l1 = 80;
+        private readonly double l2 = 80;
+ 
         public Window()
         {
             InitializeComponent();
@@ -24,18 +28,44 @@ namespace Arm
 
         private void Window_Load(object sender, EventArgs e)
         {
-            stopwatch = Stopwatch.StartNew();
-            port.Open();
+            Stopwatch = Stopwatch.StartNew();
+            //port.Open();
         }
 
         private void Window_MouseMove(object sender, MouseEventArgs e)
         {
-            if (stopwatch.ElapsedMilliseconds > 15)
+            if (Stopwatch.ElapsedMilliseconds > 15)
             {
-                stopwatch = Stopwatch.StartNew();
-                port.Write(String.Format("{0}", e.X));
-                Console.WriteLine(e.X);
+                Stopwatch = Stopwatch.StartNew();
+                //port.Write(String.Format("1:{0}2:{1}", e.X, e.Y));
+                Console.WriteLine(String.Format("Theta 1:{0}    \tTheta 2:{1}", CoordsToMotorDeg(e.Location)[0], CoordsToMotorDeg(e.Location)[1]));
             }
+        }
+
+        private void Window_MouseLeave(object sender, EventArgs e)
+        {
+            //port.Write(String.Format("1:{0}2:{1}", 0, 0));
+            Console.WriteLine(String.Format("Theta 1:{0}    \tTheta 2:{1}", 0, 0));
+        }
+
+        private double[] ScaledPoint(Point Point)
+        {
+            return new[] { (double) Point.X / 10, (double) Point.Y / 10 };
+        }
+
+        private int RadToDeg(double rad)
+        {
+            return (int)(180 * rad / Math.PI);
+        }
+
+        private double c1, c2, s1, s2;
+        private int[] CoordsToMotorDeg(Point Point)
+        {
+            c2 = (Math.Pow(ScaledPoint(Point)[0], 2) + Math.Pow(ScaledPoint(Point)[1], 2) - Math.Pow(l1, 2) - Math.Pow(l2, 2)) / (2 * l1 * l2);
+            s2 = Math.Sqrt(1 - Math.Pow(c2, 2));
+            c1 = ((l1 + l2 * c2) * ScaledPoint(Point)[0] + l2 * s2 * ScaledPoint(Point)[1]) / (Math.Pow(l1, 2) + Math.Pow(l2, 2) + 2 * l1 * l2 * c2);
+            s1 = (-l2 * s2 * ScaledPoint(Point)[0] + (l1 + l2 * c2) * ScaledPoint(Point)[1]) / (Math.Pow(l1, 2) + Math.Pow(l2, 2) + 2 * l1 * l2 * c2);
+            return new[] { RadToDeg(Math.Atan2(s1, c1)), RadToDeg(Math.Atan2(Math.Sqrt(1 - Math.Pow(c2, 2)), c2)) };
         }
     }
 }

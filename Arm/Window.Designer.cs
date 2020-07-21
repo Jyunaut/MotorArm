@@ -40,10 +40,12 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ClientSize = new System.Drawing.Size(584, 561);
+            this.MaximizeBox = false;
             this.Name = "Window";
-            this.Text = "Form1";
+            this.Text = "Motor Arm Control";
             this.Load += new System.EventHandler(this.Window_Load);
+            this.MouseLeave += new System.EventHandler(this.Window_MouseLeave);
             this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.Window_MouseMove);
             this.ResumeLayout(false);
 
