@@ -10,6 +10,8 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Diagnostics;
 using System.IO;
+using System.Security.Cryptography.X509Certificates;
+using System.Runtime.CompilerServices;
 
 namespace Arm
 {
@@ -40,12 +42,17 @@ namespace Arm
 
         private double[] ScaledPoint(Point Point)
         {
-            return new[] { (double) Point.X / 10, (double) Point.Y / 10 };
+            return new[] { (double) Point.X / 2, (double) Point.Y / 2 };
         }
 
         private int RadToDeg(double rad)
         {
             return (int)(180 * rad / Math.PI);
+        }
+
+        private double DegToRad(double deg)
+        {
+            return Math.PI * deg / 180.0;
         }
 
         private double c1, c2, s1, s2;
@@ -56,18 +63,38 @@ namespace Arm
             if (Stopwatch.ElapsedMilliseconds > 15)
             {
                 Stopwatch = Stopwatch.StartNew();
-                //port.Write(String.Format("1:{0}2:{1}", e.X, e.Y));
+                //port.Write(String.Format("{0}", e.X));
+                //Console.WriteLine(String.Format("{0}", e.X));
                 Point = e.Location;
                 Area_Paint(this, null);
-                Console.WriteLine(String.Format("Theta 1:{0}\tTheta 2:{1}", CoordsToMotorDeg()[0], CoordsToMotorDeg()[1]));
+                //Console.WriteLine(String.Format("Theta 1:{0}\tTheta 2:{1}", CoordsToMotorDeg()[0], CoordsToMotorDeg()[1]));
             }
         }
 
         private void Area_Paint(object sender, PaintEventArgs e)
         {
             Graphics g = Area.CreateGraphics();
+
+            Point Link1Coords = GetJointCoords(1);
+            Point Link2Coords = GetJointCoords(2);
+
             g.Clear(Color.White);
-            g.DrawLine(System.Drawing.Pens.Black, 0, 0, Point.X, Point.Y);
+            g.DrawLine(System.Drawing.Pens.Black, 0, 0, Link1Coords.X, Link1Coords.Y);
+            g.DrawLine(System.Drawing.Pens.Black, Link1Coords.X, Link1Coords.Y, Link1Coords.X + Link2Coords.X, Link1Coords.Y + Link2Coords.Y);
+            Console.WriteLine(String.Format("{0}\t{1}\t{2}\t{3}", Link1Coords.X + Link2Coords.X, Link1Coords.Y + Link2Coords.Y, Point.X, Point.Y));
+        }
+
+        private Point GetJointCoords(int link)
+        {
+            int[] motorDegs = CoordsToMotorDeg();
+
+            Point Coords = new Point
+            {
+                X = (int)(l1 * Math.Cos(DegToRad(motorDegs[link - 1]))),
+                Y = (int)(l1 * Math.Sin(DegToRad(motorDegs[link - 1])))
+            };
+
+            return Coords;
         }
 
         private int[] CoordsToMotorDeg()
