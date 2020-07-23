@@ -20,8 +20,8 @@ namespace Arm
         public Stopwatch Stopwatch { get; set; }
 
         // Motor Arm Properties (mm)
-        private readonly double l1 = 80;
-        private readonly double l2 = 80;
+        private readonly double l1 = 160;
+        private readonly double l2 = 160;
  
         public Window()
         {
@@ -99,11 +99,11 @@ namespace Arm
 
         private int[] CoordsToMotorDeg()
         {
-            c2 = (Math.Pow(ScaledPoint(Point)[0], 2) + Math.Pow(ScaledPoint(Point)[1], 2) - Math.Pow(l1, 2) - Math.Pow(l2, 2)) / (2 * l1 * l2);
+            c2 = (Math.Pow(Point.X, 2) + Math.Pow(Point.Y, 2) - Math.Pow(l1, 2) - Math.Pow(l2, 2)) / (2 * l1 * l2);
             s2 = Math.Sqrt(1 - Math.Pow(c2, 2));
-            c1 = ((l1 + l2 * c2) * ScaledPoint(Point)[0] + l2 * s2 * ScaledPoint(Point)[1]) / (Math.Pow(l1, 2) + Math.Pow(l2, 2) + 2 * l1 * l2 * c2);
-            s1 = (-l2 * s2 * ScaledPoint(Point)[0] + (l1 + l2 * c2) * ScaledPoint(Point)[1]) / (Math.Pow(l1, 2) + Math.Pow(l2, 2) + 2 * l1 * l2 * c2);
-            return new[] { RadToDeg(Math.Atan2(s1, c1)), RadToDeg(Math.Atan2(Math.Sqrt(1 - Math.Pow(c2, 2)), c2)) };
+            c1 = ((l1 + l2 * c2) * Point.X + l2 * s2 * Point.Y) / (Math.Pow(l1, 2) + Math.Pow(l2, 2) + 2 * l1 * l2 * c2);
+            s1 = (-l2 * s2 * Point.X + (l1 + l2 * c2) * Point.Y) / (Math.Pow(l1, 2) + Math.Pow(l2, 2) + 2 * l1 * l2 * c2);
+            return new[] { RadToDeg(Math.Atan2(s1, c1)), RadToDeg(Math.Atan2(s2, c2)) };
         }
     }
 }
