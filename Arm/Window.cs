@@ -19,9 +19,14 @@ namespace Arm
     {
         public Stopwatch Stopwatch { get; set; }
 
+        private Point Point;
+        private Point Link1Coords;
+        private Point Link2Coords;
+
         // Motor Arm Properties (mm)
         private readonly double l1 = 160;
         private readonly double l2 = 160;
+        private readonly int originOffset = 320;
  
         public Window()
         {
@@ -40,23 +45,10 @@ namespace Arm
             Console.WriteLine(String.Format("Theta 1:{0}\tTheta 2:{1}", 0, 0));
         }
 
-        private double[] ScaledPoint(Point Point)
-        {
-            return new[] { (double) Point.X / 2, (double) Point.Y / 2 };
-        }
-
         private int RadToDeg(double rad)
         {
             return (int)(180 * rad / Math.PI);
         }
-
-        private double DegToRad(double deg)
-        {
-            return Math.PI * deg / 180.0;
-        }
-
-        private double c1, c2, s1, s2;
-        private Point Point;
 
         private void Area_MouseMove(object sender, MouseEventArgs e)
         {
@@ -64,10 +56,15 @@ namespace Arm
             {
                 Stopwatch = Stopwatch.StartNew();
                 //port.Write(String.Format("{0}", e.X));
-                //Console.WriteLine(String.Format("{0}", e.X));
+
                 Point = e.Location;
+                Point.X -= originOffset;
+                Point.Y = 640 - originOffset - Point.Y;
                 Area_Paint(this, null);
-                //Console.WriteLine(String.Format("Theta 1:{0}\tTheta 2:{1}", CoordsToMotorDeg()[0], CoordsToMotorDeg()[1]));
+
+                lblMouseCoords.Text = "Mouse Coordinates\n" + "X: " + Point.X + "\n" + "Y: " + Point.Y;
+                lblEndEffectorCoords.Text = "End Effector Coordinates\n" + "X: " + Link2Coords.X + "\n" + "Y: " + -Link2Coords.Y;
+                lblLinkAngles.Text = "Link Angles\n" + "Theta 1: " + RadToDeg(t1) + "\nTheta 2: " + RadToDeg(t2);
             }
         }
 
@@ -75,35 +72,52 @@ namespace Arm
         {
             Graphics g = Area.CreateGraphics();
 
-            Point Link1Coords = GetJointCoords(1);
-            Point Link2Coords = GetJointCoords(2);
+            Link1Coords = GetJointCoords(1);
+            Link2Coords = GetJointCoords(2);
 
             g.Clear(Color.White);
-            g.DrawLine(System.Drawing.Pens.Black, 0, 0, Link1Coords.X, Link1Coords.Y);
-            g.DrawLine(System.Drawing.Pens.Black, Link1Coords.X, Link1Coords.Y, Link1Coords.X + Link2Coords.X, Link1Coords.Y + Link2Coords.Y);
-            Console.WriteLine(String.Format("{0}\t{1}\t{2}\t{3}", Link1Coords.X + Link2Coords.X, Link1Coords.Y + Link2Coords.Y, Point.X, Point.Y));
+            g.DrawLine(System.Drawing.Pens.Gray, originOffset, 0, originOffset, 640);
+            g.DrawLine(System.Drawing.Pens.Gray, 0, originOffset, 640, originOffset);
+
+            // Check if mouse is outside of workable area
+            if (Math.Sqrt(Math.Pow(Point.X, 2) + Math.Pow(Point.Y, 2)) < l1 + l2)
+            {
+                // Draw Link 1 and Link 2
+                g.DrawLine(System.Drawing.Pens.Black, originOffset, originOffset, originOffset + Link1Coords.X, originOffset + Link1Coords.Y);
+                g.DrawLine(System.Drawing.Pens.Black, originOffset + Link1Coords.X, originOffset + Link1Coords.Y, originOffset + Link2Coords.X, originOffset + Link2Coords.Y);
+            }
         }
 
+        private double t1, t2;
         private Point GetJointCoords(int link)
         {
-            int[] motorDegs = CoordsToMotorDeg();
-
-            Point Coords = new Point
+            double[] motorAngle = CoordsToMotorAngles();
+            Point Coords = new Point();
+            
+            switch (link)
             {
-                X = (int)(l1 * Math.Cos(DegToRad(motorDegs[link - 1]))),
-                Y = (int)(l1 * Math.Sin(DegToRad(motorDegs[link - 1])))
-            };
+                case 1:
+                    Coords.X = (int)(l1 * Math.Cos(motorAngle[0]));
+                    Coords.Y = (int)(l1 * Math.Sin(motorAngle[0]));
+                    break;
+                case 2:
+                    Coords.X = (int)(l1 * Math.Cos(motorAngle[0]) + l2 * Math.Cos(motorAngle[0] + motorAngle[1]));
+                    Coords.Y = (int)(l1 * Math.Sin(motorAngle[0]) + l2 * Math.Sin(motorAngle[0] + motorAngle[1]));
+                    break;
+            }
 
             return Coords;
         }
 
-        private int[] CoordsToMotorDeg()
+        private double[] CoordsToMotorAngles()
         {
-            c2 = (Math.Pow(Point.X, 2) + Math.Pow(Point.Y, 2) - Math.Pow(l1, 2) - Math.Pow(l2, 2)) / (2 * l1 * l2);
-            s2 = Math.Sqrt(1 - Math.Pow(c2, 2));
-            c1 = ((l1 + l2 * c2) * Point.X + l2 * s2 * Point.Y) / (Math.Pow(l1, 2) + Math.Pow(l2, 2) + 2 * l1 * l2 * c2);
-            s1 = (-l2 * s2 * Point.X + (l1 + l2 * c2) * Point.Y) / (Math.Pow(l1, 2) + Math.Pow(l2, 2) + 2 * l1 * l2 * c2);
-            return new[] { RadToDeg(Math.Atan2(s1, c1)), RadToDeg(Math.Atan2(s2, c2)) };
+            if (Point.X == 0)
+                Point.X = 1;
+
+            t2 = Math.Acos((Math.Pow(Point.X, 2) + Math.Pow(Point.Y, 2) - Math.Pow(l1, 2) - Math.Pow(l2, 2)) / (2 * l1 * l2));
+            t1 = Math.Atan((double)-Point.Y / (double)Point.X) - Math.Atan((l2 * Math.Sin(t2)) / (l1 + l2 * Math.Cos(t2)));
+            Console.WriteLine(String.Format("Theta 1: {0}\tTheta 2: {1}", t1, t2));
+            return new[] { t1, t2 };
         }
     }
 }
