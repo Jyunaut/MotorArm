@@ -45,12 +45,7 @@ namespace Arm
             Console.WriteLine(String.Format("Theta 1:{0}\tTheta 2:{1}", 0, 0));
         }
 
-        private int RadToDeg(double rad)
-        {
-            return (int)(180 * rad / Math.PI);
-        }
-
-        private void Area_MouseMove(object sender, MouseEventArgs e)
+        private void pnlSimulation_MouseMove(object sender, MouseEventArgs e)
         {
             if (Stopwatch.ElapsedMilliseconds > 15)
             {
@@ -60,22 +55,22 @@ namespace Arm
                 Point = e.Location;
                 Point.X -= originOffset;
                 Point.Y = 640 - originOffset - Point.Y;
-                Area_Paint(this, null);
+                pnlSimulation_Paint(this, null);
 
-                lblMouseCoords.Text = "Mouse Coordinates\n" + "X: " + Point.X + "\n" + "Y: " + Point.Y;
-                lblEndEffectorCoords.Text = "End Effector Coordinates\n" + "X: " + Link2Coords.X + "\n" + "Y: " + -Link2Coords.Y;
-                lblLinkAngles.Text = "Link Angles\n" + "Theta 1: " + RadToDeg(t1) + "\nTheta 2: " + RadToDeg(t2);
+                DisplayValues();
             }
         }
 
-        private void Area_Paint(object sender, PaintEventArgs e)
+        private void pnlSimulation_Paint(object sender, PaintEventArgs e)
         {
-            Graphics g = Area.CreateGraphics();
+            Graphics g = pnlSimulation.CreateGraphics();
 
             Link1Coords = GetJointCoords(1);
             Link2Coords = GetJointCoords(2);
 
             g.Clear(Color.White);
+
+            // Draw Axis
             g.DrawLine(System.Drawing.Pens.Gray, originOffset, 0, originOffset, 640);
             g.DrawLine(System.Drawing.Pens.Gray, 0, originOffset, 640, originOffset);
 
@@ -86,6 +81,18 @@ namespace Arm
                 g.DrawLine(System.Drawing.Pens.Black, originOffset, originOffset, originOffset + Link1Coords.X, originOffset + Link1Coords.Y);
                 g.DrawLine(System.Drawing.Pens.Black, originOffset + Link1Coords.X, originOffset + Link1Coords.Y, originOffset + Link2Coords.X, originOffset + Link2Coords.Y);
             }
+        }
+
+        private void DisplayValues()
+        {
+            lblMouseCoords.Text = "Mouse Coordinates\n" + "X: " + Point.X + "\n" + "Y: " + Point.Y;
+            lblEndEffectorCoords.Text = "End Effector Coordinates\n" + "X: " + Link2Coords.X + "\n" + "Y: " + -Link2Coords.Y;
+            lblLinkAngles.Text = "Link Angles\n" + "Theta 1: " + RadToDeg(t1) + "\nTheta 2: " + RadToDeg(t2);
+        }
+
+        private int RadToDeg(double rad)
+        {
+            return (int)(180 * rad / Math.PI);
         }
 
         private double t1, t2;
@@ -109,6 +116,11 @@ namespace Arm
             return Coords;
         }
 
+        private void pnlDraw_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
         private double[] CoordsToMotorAngles()
         {
             if (Point.X == 0)
@@ -116,7 +128,7 @@ namespace Arm
 
             t2 = Math.Acos((Math.Pow(Point.X, 2) + Math.Pow(Point.Y, 2) - Math.Pow(l1, 2) - Math.Pow(l2, 2)) / (2 * l1 * l2));
             t1 = Math.Atan((double)-Point.Y / (double)Point.X) - Math.Atan((l2 * Math.Sin(t2)) / (l1 + l2 * Math.Cos(t2)));
-            Console.WriteLine(String.Format("Theta 1: {0}\tTheta 2: {1}", t1, t2));
+
             return new[] { t1, t2 };
         }
     }
