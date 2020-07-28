@@ -34,8 +34,14 @@
             this.lblLinkAngles = new System.Windows.Forms.Label();
             this.lblEndEffectorCoords = new System.Windows.Forms.Label();
             this.lblMouseCoords = new System.Windows.Forms.Label();
-            this.pnlDraw = new System.Windows.Forms.Panel();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.cboxPortStatus = new System.Windows.Forms.CheckBox();
+            this.lblPortStatus = new System.Windows.Forms.Label();
+            this.lblPortNum = new System.Windows.Forms.Label();
+            this.numPort = new System.Windows.Forms.NumericUpDown();
             this.pnlSimulation.SuspendLayout();
+            this.panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numPort)).BeginInit();
             this.SuspendLayout();
             // 
             // port
@@ -47,7 +53,7 @@
             this.pnlSimulation.Controls.Add(this.lblLinkAngles);
             this.pnlSimulation.Controls.Add(this.lblEndEffectorCoords);
             this.pnlSimulation.Controls.Add(this.lblMouseCoords);
-            this.pnlSimulation.Controls.Add(this.pnlDraw);
+            this.pnlSimulation.Controls.Add(this.panel1);
             this.pnlSimulation.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlSimulation.Location = new System.Drawing.Point(0, 0);
             this.pnlSimulation.Name = "pnlSimulation";
@@ -83,16 +89,54 @@
             this.lblMouseCoords.TabIndex = 1;
             this.lblMouseCoords.Text = "Mouse Coordinates\r\nX: 0\r\nY: 0";
             // 
-            // pnlDraw
+            // panel1
             // 
-            this.pnlDraw.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pnlDraw.Enabled = false;
-            this.pnlDraw.Location = new System.Drawing.Point(0, 0);
-            this.pnlDraw.Name = "pnlDraw";
-            this.pnlDraw.Size = new System.Drawing.Size(624, 601);
-            this.pnlDraw.TabIndex = 5;
-            this.pnlDraw.Visible = false;
-            this.pnlDraw.Paint += new System.Windows.Forms.PaintEventHandler(this.pnlDraw_Paint);
+            this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.panel1.Controls.Add(this.cboxPortStatus);
+            this.panel1.Controls.Add(this.lblPortStatus);
+            this.panel1.Controls.Add(this.lblPortNum);
+            this.panel1.Controls.Add(this.numPort);
+            this.panel1.Location = new System.Drawing.Point(0, 321);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(320, 280);
+            this.panel1.TabIndex = 5;
+            // 
+            // cboxPortStatus
+            // 
+            this.cboxPortStatus.AutoSize = true;
+            this.cboxPortStatus.Location = new System.Drawing.Point(12, 43);
+            this.cboxPortStatus.Name = "cboxPortStatus";
+            this.cboxPortStatus.Size = new System.Drawing.Size(74, 17);
+            this.cboxPortStatus.TabIndex = 7;
+            this.cboxPortStatus.Text = "Port Open";
+            this.cboxPortStatus.UseVisualStyleBackColor = true;
+            this.cboxPortStatus.CheckedChanged += new System.EventHandler(this.cboxPortStatus_CheckedChanged);
+            // 
+            // lblPortStatus
+            // 
+            this.lblPortStatus.AutoSize = true;
+            this.lblPortStatus.Location = new System.Drawing.Point(12, 89);
+            this.lblPortStatus.Name = "lblPortStatus";
+            this.lblPortStatus.Size = new System.Drawing.Size(97, 13);
+            this.lblPortStatus.TabIndex = 6;
+            this.lblPortStatus.Text = "Port Status: Closed";
+            // 
+            // lblPortNum
+            // 
+            this.lblPortNum.AutoSize = true;
+            this.lblPortNum.Location = new System.Drawing.Point(9, 19);
+            this.lblPortNum.Name = "lblPortNum";
+            this.lblPortNum.Size = new System.Drawing.Size(55, 13);
+            this.lblPortNum.TabIndex = 3;
+            this.lblPortNum.Text = "Serial Port";
+            // 
+            // numPort
+            // 
+            this.numPort.Location = new System.Drawing.Point(70, 17);
+            this.numPort.Name = "numPort";
+            this.numPort.Size = new System.Drawing.Size(39, 20);
+            this.numPort.TabIndex = 2;
+            this.numPort.ValueChanged += new System.EventHandler(this.numPort_ValueChanged);
             // 
             // Window
             // 
@@ -104,9 +148,11 @@
             this.Name = "Window";
             this.Text = "Motor Arm Control";
             this.Load += new System.EventHandler(this.Window_Load);
-            this.MouseLeave += new System.EventHandler(this.Window_MouseLeave);
             this.pnlSimulation.ResumeLayout(false);
             this.pnlSimulation.PerformLayout();
+            this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numPort)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -118,6 +164,10 @@
         private System.Windows.Forms.Label lblMouseCoords;
         private System.Windows.Forms.Label lblEndEffectorCoords;
         private System.Windows.Forms.Label lblLinkAngles;
-        private System.Windows.Forms.Panel pnlDraw;
+        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.NumericUpDown numPort;
+        private System.Windows.Forms.Label lblPortNum;
+        private System.Windows.Forms.Label lblPortStatus;
+        private System.Windows.Forms.CheckBox cboxPortStatus;
     }
 }

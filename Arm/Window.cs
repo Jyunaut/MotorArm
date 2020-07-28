@@ -36,13 +36,8 @@ namespace Arm
         private void Window_Load(object sender, EventArgs e)
         {
             Stopwatch = Stopwatch.StartNew();
-            //port.Open();
-        }
 
-        private void Window_MouseLeave(object sender, EventArgs e)
-        {
-            //port.Write(String.Format("1:{0}2:{1}", 0, 0));
-            Console.WriteLine(String.Format("Theta 1:{0}\tTheta 2:{1}", 0, 0));
+            port.PortName = "COM" + numPort.Value;
         }
 
         private void pnlSimulation_MouseMove(object sender, MouseEventArgs e)
@@ -50,7 +45,6 @@ namespace Arm
             if (Stopwatch.ElapsedMilliseconds > 15)
             {
                 Stopwatch = Stopwatch.StartNew();
-                //port.Write(String.Format("{0}", e.X));
 
                 Point = e.Location;
                 Point.X -= originOffset;
@@ -80,6 +74,38 @@ namespace Arm
                 // Draw Link 1 and Link 2
                 g.DrawLine(System.Drawing.Pens.Black, originOffset, originOffset, originOffset + Link1Coords.X, originOffset + Link1Coords.Y);
                 g.DrawLine(System.Drawing.Pens.Black, originOffset + Link1Coords.X, originOffset + Link1Coords.Y, originOffset + Link2Coords.X, originOffset + Link2Coords.Y);
+            }
+        }
+        private void numPort_ValueChanged(object sender, EventArgs e)
+        {
+            port.PortName = "COM" + numPort.Value;
+        }
+
+        private void cboxPortStatus_CheckedChanged(object sender, EventArgs e)
+        {
+            if (cboxPortStatus.Checked)
+            {
+                try
+                {
+                    port.Open();
+                    lblPortStatus.Text = "Port Status: Open";
+                }
+                catch (System.IO.IOException)
+                {
+                    lblPortStatus.Text = "Port Status: Not Available";
+                }
+            }
+            else
+            {
+                try
+                {
+                    port.Close();
+                }
+                catch (System.IO.IOException)
+                {
+                    // Ignore Exception
+                }
+                lblPortStatus.Text = "Port Status: Closed";
             }
         }
 
@@ -114,11 +140,6 @@ namespace Arm
             }
 
             return Coords;
-        }
-
-        private void pnlDraw_Paint(object sender, PaintEventArgs e)
-        {
-
         }
 
         private double[] CoordsToMotorAngles()
