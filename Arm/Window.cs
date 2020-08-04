@@ -46,11 +46,17 @@ namespace Arm
             {
                 Stopwatch = Stopwatch.StartNew();
 
+                // Get Point coordinates with respect to the origin
                 Point = e.Location;
                 Point.X -= originOffset;
                 Point.Y = 640 - originOffset - Point.Y;
-                pnlSimulation_Paint(this, null);
 
+                // Do not output angles if mouse is out of bounds
+                if (Math.Sqrt(Math.Pow(Point.X, 2) + Math.Pow(Point.Y, 2)) > l1 + l2
+                    || Point.X < 0 || Point.Y < 0)
+                    return;
+
+                pnlSimulation_Paint(this, null);
                 DisplayValues();
             }
         }
@@ -64,17 +70,18 @@ namespace Arm
 
             g.Clear(Color.White);
 
-            // Draw Axis
+            // Draw Axis and Bounds
             g.DrawLine(System.Drawing.Pens.Gray, originOffset, 0, originOffset, 640);
             g.DrawLine(System.Drawing.Pens.Gray, 0, originOffset, 640, originOffset);
+            g.DrawEllipse(System.Drawing.Pens.Gray, (int)(originOffset - l1 - l2), (int)(originOffset - l1 - l2),
+                                                    (int)(2 * (l1 + l2))         , (int)(2 * (l1 + l2)));
 
-            // Check if mouse is outside of workable area
-            if (Math.Sqrt(Math.Pow(Point.X, 2) + Math.Pow(Point.Y, 2)) < l1 + l2)
-            {
-                // Draw Link 1 and Link 2
-                g.DrawLine(System.Drawing.Pens.Black, originOffset, originOffset, originOffset + Link1Coords.X, originOffset + Link1Coords.Y);
-                g.DrawLine(System.Drawing.Pens.Black, originOffset + Link1Coords.X, originOffset + Link1Coords.Y, originOffset + Link2Coords.X, originOffset + Link2Coords.Y);
-            }
+            // Draw Link 1 and Link 2
+            g.DrawLine(System.Drawing.Pens.Black, originOffset, originOffset,
+                                                    originOffset + Link1Coords.X, originOffset + Link1Coords.Y);
+            g.DrawLine(System.Drawing.Pens.Black, originOffset + Link1Coords.X, originOffset + Link1Coords.Y,
+                                                    originOffset + Link2Coords.X, originOffset + Link2Coords.Y);
+
         }
         private void numPort_ValueChanged(object sender, EventArgs e)
         {
