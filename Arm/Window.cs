@@ -27,6 +27,8 @@ namespace Arm
         private readonly double l1 = 160;
         private readonly double l2 = 160;
         private readonly int originOffset = 320;
+
+        private double[] motorAngle;
  
         public Window()
         {
@@ -52,12 +54,14 @@ namespace Arm
                 Point.Y = 640 - originOffset - Point.Y;
 
                 // Do not output angles if mouse is out of bounds
-                if (Math.Sqrt(Math.Pow(Point.X, 2) + Math.Pow(Point.Y, 2)) > l1 + l2
+                if (Math.Sqrt(Math.Pow(Point.X, 2) + Math.Pow(Point.Y, 2)) > l1 + l2 - 1
                     || Point.X < 0 || Point.Y < 0)
                     return;
 
                 pnlSimulation_Paint(this, null);
                 DisplayValues();
+                if (cboxPortStatus.Checked && port.IsOpen)
+                    WriteAnglesToPort();
             }
         }
 
@@ -76,12 +80,15 @@ namespace Arm
             g.DrawEllipse(System.Drawing.Pens.Gray, (int)(originOffset - l1 - l2), (int)(originOffset - l1 - l2),
                                                     (int)(2 * (l1 + l2))         , (int)(2 * (l1 + l2)));
 
+            if (Math.Sqrt(Math.Pow(Point.X, 2) + Math.Pow(Point.Y, 2)) > l1 + l2 - 1
+                || Point.X < 0 || Point.Y < 0)
+                return;
+
             // Draw Link 1 and Link 2
             g.DrawLine(System.Drawing.Pens.Black, originOffset, originOffset,
-                                                    originOffset + Link1Coords.X, originOffset + Link1Coords.Y);
+                                                  originOffset + Link1Coords.X, originOffset + Link1Coords.Y);
             g.DrawLine(System.Drawing.Pens.Black, originOffset + Link1Coords.X, originOffset + Link1Coords.Y,
-                                                    originOffset + Link2Coords.X, originOffset + Link2Coords.Y);
-
+                                                  originOffset + Link2Coords.X, originOffset + Link2Coords.Y);
         }
         private void numPort_ValueChanged(object sender, EventArgs e)
         {
@@ -131,7 +138,7 @@ namespace Arm
         private double t1, t2;
         private Point GetJointCoords(int link)
         {
-            double[] motorAngle = CoordsToMotorAngles();
+            motorAngle = CoordsToMotorAngles();
             Point Coords = new Point();
             
             switch (link)
@@ -155,9 +162,14 @@ namespace Arm
                 Point.X = 1;
 
             t2 = Math.Acos((Math.Pow(Point.X, 2) + Math.Pow(Point.Y, 2) - Math.Pow(l1, 2) - Math.Pow(l2, 2)) / (2 * l1 * l2));
-            t1 = Math.Atan((double)-Point.Y / (double)Point.X) - Math.Atan((l2 * Math.Sin(t2)) / (l1 + l2 * Math.Cos(t2)));
+            t1 = Math.Atan((double) - Point.Y / (double)Point.X) - Math.Atan((l2 * Math.Sin(t2)) / (l1 + l2 * Math.Cos(t2)));
 
             return new[] { t1, t2 };
+        }
+
+        private void WriteAnglesToPort()
+        {
+            port.WriteLine(String.Format("A{0}B{1}", RadToDeg(-t1), RadToDeg(t2)));
         }
     }
 }
