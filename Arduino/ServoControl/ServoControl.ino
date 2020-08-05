@@ -12,7 +12,7 @@ void setup()
     m1.attach(9);
     m2.attach(10);
     m3.attach(11);
-
+    m1.write(90);
     Serial.begin(9600);
     Serial.setTimeout(10);
 }

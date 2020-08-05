@@ -127,7 +127,7 @@ namespace Arm
         {
             lblMouseCoords.Text = "Mouse Coordinates\n" + "X: " + Point.X + "\n" + "Y: " + Point.Y;
             lblEndEffectorCoords.Text = "End Effector Coordinates\n" + "X: " + Link2Coords.X + "\n" + "Y: " + -Link2Coords.Y;
-            lblLinkAngles.Text = "Link Angles\n" + "Theta 1: " + RadToDeg(t1) + "\nTheta 2: " + RadToDeg(t2);
+            lblLinkAngles.Text = "Link Angles\n" + "Theta 1: " + -RadToDeg(t1) + "\nTheta 2: " + RadToDeg(Math.PI - t2);
         }
 
         private int RadToDeg(double rad)
@@ -169,7 +169,7 @@ namespace Arm
 
         private void WriteAnglesToPort()
         {
-            port.WriteLine(String.Format("A{0}B{1}", RadToDeg(-t1), RadToDeg(t2)));
+            port.WriteLine(String.Format("A{0}B{1}", RadToDeg(-t1), RadToDeg(Math.PI - t2)));
         }
     }
 }
