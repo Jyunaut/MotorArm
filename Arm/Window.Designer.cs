@@ -34,13 +34,13 @@
             this.lblLinkAngles = new System.Windows.Forms.Label();
             this.lblEndEffectorCoords = new System.Windows.Forms.Label();
             this.lblMouseCoords = new System.Windows.Forms.Label();
-            this.panel1 = new System.Windows.Forms.Panel();
+            this.pnlMenu = new System.Windows.Forms.Panel();
             this.cboxPortStatus = new System.Windows.Forms.CheckBox();
             this.lblPortStatus = new System.Windows.Forms.Label();
             this.lblPortNum = new System.Windows.Forms.Label();
             this.numPort = new System.Windows.Forms.NumericUpDown();
             this.pnlSimulation.SuspendLayout();
-            this.panel1.SuspendLayout();
+            this.pnlMenu.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numPort)).BeginInit();
             this.SuspendLayout();
             // 
@@ -53,14 +53,16 @@
             this.pnlSimulation.Controls.Add(this.lblLinkAngles);
             this.pnlSimulation.Controls.Add(this.lblEndEffectorCoords);
             this.pnlSimulation.Controls.Add(this.lblMouseCoords);
-            this.pnlSimulation.Controls.Add(this.panel1);
+            this.pnlSimulation.Controls.Add(this.pnlMenu);
             this.pnlSimulation.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlSimulation.Location = new System.Drawing.Point(0, 0);
             this.pnlSimulation.Name = "pnlSimulation";
             this.pnlSimulation.Size = new System.Drawing.Size(624, 601);
             this.pnlSimulation.TabIndex = 0;
             this.pnlSimulation.Paint += new System.Windows.Forms.PaintEventHandler(this.pnlSimulation_Paint);
+            this.pnlSimulation.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pnlSimulation_MouseDown);
             this.pnlSimulation.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pnlSimulation_MouseMove);
+            this.pnlSimulation.MouseUp += new System.Windows.Forms.MouseEventHandler(this.pnlSimulation_MouseUp);
             // 
             // lblLinkAngles
             // 
@@ -89,17 +91,17 @@
             this.lblMouseCoords.TabIndex = 1;
             this.lblMouseCoords.Text = "Mouse Coordinates\r\nX: 0\r\nY: 0";
             // 
-            // panel1
+            // pnlMenu
             // 
-            this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.panel1.Controls.Add(this.cboxPortStatus);
-            this.panel1.Controls.Add(this.lblPortStatus);
-            this.panel1.Controls.Add(this.lblPortNum);
-            this.panel1.Controls.Add(this.numPort);
-            this.panel1.Location = new System.Drawing.Point(0, 321);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(320, 280);
-            this.panel1.TabIndex = 5;
+            this.pnlMenu.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.pnlMenu.Controls.Add(this.cboxPortStatus);
+            this.pnlMenu.Controls.Add(this.lblPortStatus);
+            this.pnlMenu.Controls.Add(this.lblPortNum);
+            this.pnlMenu.Controls.Add(this.numPort);
+            this.pnlMenu.Location = new System.Drawing.Point(0, 321);
+            this.pnlMenu.Name = "pnlMenu";
+            this.pnlMenu.Size = new System.Drawing.Size(320, 280);
+            this.pnlMenu.TabIndex = 5;
             // 
             // cboxPortStatus
             // 
@@ -150,8 +152,8 @@
             this.Load += new System.EventHandler(this.Window_Load);
             this.pnlSimulation.ResumeLayout(false);
             this.pnlSimulation.PerformLayout();
-            this.panel1.ResumeLayout(false);
-            this.panel1.PerformLayout();
+            this.pnlMenu.ResumeLayout(false);
+            this.pnlMenu.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numPort)).EndInit();
             this.ResumeLayout(false);
 
@@ -164,7 +166,7 @@
         private System.Windows.Forms.Label lblMouseCoords;
         private System.Windows.Forms.Label lblEndEffectorCoords;
         private System.Windows.Forms.Label lblLinkAngles;
-        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Panel pnlMenu;
         private System.Windows.Forms.NumericUpDown numPort;
         private System.Windows.Forms.Label lblPortNum;
         private System.Windows.Forms.Label lblPortStatus;

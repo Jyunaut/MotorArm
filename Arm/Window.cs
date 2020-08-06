@@ -44,7 +44,7 @@ namespace Arm
 
         private void pnlSimulation_MouseMove(object sender, MouseEventArgs e)
         {
-            if (Stopwatch.ElapsedMilliseconds > 15)
+            if (Stopwatch.ElapsedMilliseconds > 25)
             {
                 Stopwatch = Stopwatch.StartNew();
 
@@ -60,8 +60,7 @@ namespace Arm
 
                 pnlSimulation_Paint(this, null);
                 DisplayValues();
-                if (cboxPortStatus.Checked && port.IsOpen)
-                    WriteAnglesToPort();
+                WriteAnglesToPort();
             }
         }
 
@@ -93,6 +92,7 @@ namespace Arm
         private void numPort_ValueChanged(object sender, EventArgs e)
         {
             port.PortName = "COM" + numPort.Value;
+            cboxPortStatus.Checked = false;
         }
 
         private void cboxPortStatus_CheckedChanged(object sender, EventArgs e)
@@ -135,7 +135,7 @@ namespace Arm
             return (int)(180 * rad / Math.PI);
         }
 
-        private double t1, t2;
+        private double t1, t2, t3 = 170;
         private Point GetJointCoords(int link)
         {
             motorAngle = CoordsToMotorAngles();
@@ -167,9 +167,24 @@ namespace Arm
             return new[] { t1, t2 };
         }
 
+        private void pnlSimulation_MouseUp(object sender, MouseEventArgs e)
+        {
+            t3 = 170;
+            WriteAnglesToPort();
+        }
+
+        private void pnlSimulation_MouseDown(object sender, MouseEventArgs e)
+        {
+            t3 = 100;
+            WriteAnglesToPort();
+        }
+
         private void WriteAnglesToPort()
         {
-            port.WriteLine(String.Format("A{0}B{1}", RadToDeg(-t1), RadToDeg(Math.PI - t2)));
+            if (cboxPortStatus.Checked && port.IsOpen)
+            {
+                port.WriteLine(String.Format("A{0}B{1}", RadToDeg(-t1), RadToDeg(Math.PI - t2)) + "C" + t3);
+            }
         }
     }
 }
